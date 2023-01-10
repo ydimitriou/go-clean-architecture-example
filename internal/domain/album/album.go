@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//Album Model that represents the Album
+// Album Model that represents the Album
 type Album struct {
 	ID          uuid.UUID
 	Title       string

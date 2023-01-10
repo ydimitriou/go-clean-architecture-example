@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//Repository Interface for album
+// Repository Interface for album
 type Repository interface {
 	GetByID(id uuid.UUID) (*Album, error)
 	GetAll() ([]Album, error)
