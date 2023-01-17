@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TestAddAlbumHandler_Handle(t *testing.T) {
+func TestCreateAlbumHandler_Handle(t *testing.T) {
 	mockUUID := uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
 	mockTime, _ := time.Parse("yyyy-MM-dd", "2022-01-24")
 	type fields struct {
@@ -20,13 +20,13 @@ func TestAddAlbumHandler_Handle(t *testing.T) {
 		repo         album.Repository
 	}
 	type args struct {
-		req AddAlbumRequest
+		req CreateAlbumRequest
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
-		err    error
+		expErr error
 	}{
 		{
 			name: "should not return error when success",
@@ -51,20 +51,20 @@ func TestAddAlbumHandler_Handle(t *testing.T) {
 						CreatedAT:   mockTime,
 					}
 					mr := album.MockRepository{}
-					mr.On("Add", a).Return(nil)
+					mr.On("Create", a).Return(nil)
 
 					return &mr
 				}(),
 			},
 			args: args{
-				req: AddAlbumRequest{
+				req: CreateAlbumRequest{
 					Title:       "Foo",
 					Artist:      "Bar",
 					Price:       6.24,
 					Description: "Foo Bar",
 				},
 			},
-			err: nil,
+			expErr: nil,
 		},
 		{
 			name: "should return error when repo returns error",
@@ -89,32 +89,31 @@ func TestAddAlbumHandler_Handle(t *testing.T) {
 						CreatedAT:   mockTime,
 					}
 					mr := album.MockRepository{}
-					mr.On("Add", a).Return(errors.New("repo error"))
+					mr.On("Create", a).Return(errors.New("repo error"))
 					return &mr
 				}(),
 			},
 			args: args{
-				req: AddAlbumRequest{
+				req: CreateAlbumRequest{
 					Title:       "Foo",
 					Artist:      "Bar",
 					Price:       3.24,
 					Description: "Foo Bar",
 				},
 			},
-			err: errors.New("repo error"),
+			expErr: errors.New("repo error"),
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h := addAlbumHandler{
+			h := createAlbumHandler{
 				uuidProvider: tt.fields.uuidProvider,
 				timeProvider: tt.fields.timeProvider,
 				repo:         tt.fields.repo,
 			}
 
 			err := h.Handle(tt.args.req)
-			assert.Equal(t, tt.err, err)
+			assert.Equal(t, tt.expErr, err)
 		})
 	}
 }

@@ -6,21 +6,33 @@ import (
 	"github.com/ydimitriou/go-clean-architecture-example/internal/pkg/uuid"
 )
 
-// AddAlbumRequest Model of CreateAlbumRequestHandler
-type AddAlbumRequest struct {
+// CreateAlbumRequest Model of CreateAlbumRequestHandler
+type CreateAlbumRequest struct {
 	Title       string
 	Artist      string
 	Price       float64
 	Description string
 }
 
-type addAlbumHandler struct {
+type CreateAlbumHandler interface {
+	Handle(req CreateAlbumRequest) error
+}
+
+type createAlbumHandler struct {
 	uuidProvider uuid.Provider
 	timeProvider time.Provider
 	repo         album.Repository
 }
 
-func (h addAlbumHandler) Handle(req AddAlbumRequest) error {
+func NewCreateAlbumHandler(up uuid.Provider, tp time.Provider, repo album.Repository) CreateAlbumHandler {
+	return createAlbumHandler{
+		uuidProvider: up,
+		timeProvider: tp,
+		repo:         repo,
+	}
+}
+
+func (h createAlbumHandler) Handle(req CreateAlbumRequest) error {
 	a := album.Album{
 		ID:          h.uuidProvider.NewUUID(),
 		Title:       req.Title,
@@ -30,7 +42,7 @@ func (h addAlbumHandler) Handle(req AddAlbumRequest) error {
 		CreatedAT:   h.timeProvider.Now(),
 	}
 
-	err := h.repo.Add(a)
+	err := h.repo.Create(a)
 	if err != nil {
 		return err
 	}

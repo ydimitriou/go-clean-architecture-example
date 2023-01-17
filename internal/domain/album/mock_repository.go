@@ -24,8 +24,8 @@ func (m *MockRepository) GetAll() ([]Album, error) {
 	return args.Get(0).([]Album), args.Error(1)
 }
 
-// Add mock
-func (m *MockRepository) Add(album Album) error {
+// Create mock
+func (m *MockRepository) Create(album Album) error {
 	args := m.Called(album)
 
 	return args.Error(0)
