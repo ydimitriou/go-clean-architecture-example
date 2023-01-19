@@ -3,3 +3,6 @@ run: ## Run the application
 
 test: ## Run unit tests
 	go test -mod=vendor `go list ./... | grep -v 'docs'` -race
+
+lint: ## Perform linting
+	golangci-lint run --disable-all -E revive  --exclude-use-default=false --modules-download-mode=vendor

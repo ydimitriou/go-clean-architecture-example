@@ -6,10 +6,12 @@ import (
 	"github.com/ydimitriou/go-clean-architecture-example/internal/domain/album"
 )
 
+// Repository is the in-memory repository implementation
 type Repository struct {
 	albums map[string]album.Album
 }
 
+// NewRepository constructor
 func NewRepository() Repository {
 	return Repository{
 		albums: make(map[string]album.Album),

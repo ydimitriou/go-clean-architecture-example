@@ -14,6 +14,7 @@ type CreateAlbumRequest struct {
 	Description string
 }
 
+// CreateAlbumHandler interface for creating albums
 type CreateAlbumHandler interface {
 	Handle(req CreateAlbumRequest) error
 }
@@ -24,6 +25,7 @@ type createAlbumHandler struct {
 	repo         album.Repository
 }
 
+// NewCreateAlbumHandler constructor
 func NewCreateAlbumHandler(up uuid.Provider, tp time.Provider, repo album.Repository) CreateAlbumHandler {
 	return createAlbumHandler{
 		uuidProvider: up,
@@ -32,6 +34,7 @@ func NewCreateAlbumHandler(up uuid.Provider, tp time.Provider, repo album.Reposi
 	}
 }
 
+// Handle handles create album request
 func (h createAlbumHandler) Handle(req CreateAlbumRequest) error {
 	a := album.Album{
 		ID:          h.uuidProvider.NewUUID(),

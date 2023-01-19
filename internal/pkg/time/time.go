@@ -2,6 +2,7 @@ package time
 
 import "time"
 
+// Provider interface for time abstraction
 type Provider interface {
 	Now() time.Time
 }
@@ -9,6 +10,7 @@ type Provider interface {
 type timeProvider struct {
 }
 
+// NewTimeProvider constructor to return the default time provider
 func NewTimeProvider() Provider {
 	return timeProvider{}
 }

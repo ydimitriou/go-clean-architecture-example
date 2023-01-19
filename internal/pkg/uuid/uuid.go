@@ -2,6 +2,7 @@ package uuid
 
 import "github.com/google/uuid"
 
+// Provider interface for uuid generator abstraction
 type Provider interface {
 	NewUUID() uuid.UUID
 }
@@ -9,6 +10,7 @@ type Provider interface {
 type uuidProvider struct {
 }
 
+// NewUUIDProvider constructor to return the default uuid provider
 func NewUUIDProvider() Provider {
 	return uuidProvider{}
 }
