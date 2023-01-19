@@ -32,7 +32,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, err.Error())
+		fmt.Fprintf(w, err.Error())
 		return
 	}
 	album := commands.CreateAlbumRequest{
@@ -44,7 +44,23 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	err = h.appServices.Commands.CreateAlbumHandler.Handle(album)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, err.Error())
+		fmt.Fprintf(w, err.Error())
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+// GetAll return all available albums
+func (h Handler) GetAll(w http.ResponseWriter, _ *http.Request) {
+	albums, err := h.appServices.Queries.GetAllAlbumsHAndler.Handle()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, err.Error())
+		return
+	}
+	err = json.NewEncoder(w).Encode(albums)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, err.Error())
+		return
+	}
 }

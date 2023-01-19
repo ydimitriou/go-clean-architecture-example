@@ -13,5 +13,5 @@ type Album struct {
 	Artist      string
 	Price       float64
 	Description string
-	CreatedAT   time.Time
+	CreatedAt   time.Time
 }

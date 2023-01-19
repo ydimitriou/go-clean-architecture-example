@@ -42,7 +42,7 @@ func (h createAlbumHandler) Handle(req CreateAlbumRequest) error {
 		Artist:      req.Artist,
 		Price:       req.Price,
 		Description: req.Description,
-		CreatedAT:   h.timeProvider.Now(),
+		CreatedAt:   h.timeProvider.Now(),
 	}
 
 	err := h.repo.Create(a)

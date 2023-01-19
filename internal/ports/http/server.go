@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-const albumsHTTPPATH = "/album"
+const albumsHTTPPATH = "/albums"
 
 // Server is the http server
 type Server struct {
@@ -33,6 +33,8 @@ func NewServer(as app.Services) Server {
 func (httpServer *Server) createHTTPRoutes() {
 	//Commands
 	httpServer.router.HandleFunc(albumsHTTPPATH, album.NewHandler(httpServer.appServices.AlbumServices).Create).Methods("POST")
+	// Queries
+	httpServer.router.HandleFunc(albumsHTTPPATH, album.NewHandler(httpServer.appServices.AlbumServices).GetAll).Methods("GET")
 }
 
 // ListenAndServe wraps HTTP listenAndServe (initiate listening for request)

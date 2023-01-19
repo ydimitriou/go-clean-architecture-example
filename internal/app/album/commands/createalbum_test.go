@@ -48,7 +48,7 @@ func TestCreateAlbumHandler_Handle(t *testing.T) {
 						Artist:      "Bar",
 						Price:       6.24,
 						Description: "Foo Bar",
-						CreatedAT:   mockTime,
+						CreatedAt:   mockTime,
 					}
 					mr := album.MockRepository{}
 					mr.On("Create", a).Return(nil)
@@ -86,7 +86,7 @@ func TestCreateAlbumHandler_Handle(t *testing.T) {
 						Artist:      "Bar",
 						Price:       3.24,
 						Description: "Foo Bar",
-						CreatedAT:   mockTime,
+						CreatedAt:   mockTime,
 					}
 					mr := album.MockRepository{}
 					mr.On("Create", a).Return(errors.New("repo error"))
