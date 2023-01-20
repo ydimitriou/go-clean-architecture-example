@@ -51,8 +51,7 @@ func (mr Repository) Delete(id uuid.UUID) error {
 func (mr Repository) GetByID(id uuid.UUID) (*album.Album, error) {
 	val, exists := mr.albums[id.String()]
 	if !exists {
-		err := fmt.Errorf("album with id %v not found", id.String())
-		return nil, err
+		return nil, nil
 	}
 
 	return &val, nil

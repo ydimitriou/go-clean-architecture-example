@@ -35,6 +35,7 @@ func (httpServer *Server) createHTTPRoutes() {
 	httpServer.router.HandleFunc(albumsHTTPPATH, album.NewHandler(httpServer.appServices.AlbumServices).Create).Methods("POST")
 	// Queries
 	httpServer.router.HandleFunc(albumsHTTPPATH, album.NewHandler(httpServer.appServices.AlbumServices).GetAll).Methods("GET")
+	httpServer.router.HandleFunc(albumsHTTPPATH+"/{"+album.GetByIDURLParam+"}", album.NewHandler(httpServer.appServices.AlbumServices).GetByID).Methods("GET")
 }
 
 // ListenAndServe wraps HTTP listenAndServe (initiate listening for request)

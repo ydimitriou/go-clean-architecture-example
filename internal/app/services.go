@@ -16,6 +16,7 @@ type Commands struct {
 // Queries contains all query handlers
 type Queries struct {
 	GetAllAlbumsHAndler queries.GetAllAlbumsHandler
+	GetAlbumHandler     queries.GetAlbumHandler
 }
 
 // AlbumServices contains all the album queries and commands of app layer
@@ -38,6 +39,7 @@ func NewServices(up uuid.Provider, tp time.Provider, repo album.Repository) Serv
 			},
 			Queries: Queries{
 				GetAllAlbumsHAndler: queries.NewGetAllAlbumsHandler(repo),
+				GetAlbumHandler:     queries.NewGetAlbumHandler(repo),
 			},
 		},
 	}

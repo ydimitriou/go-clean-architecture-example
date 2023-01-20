@@ -180,6 +180,7 @@ func TestRepository_GetByID(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		expRes *album.Album
 		expErr error
 	}{
 		{
@@ -192,13 +193,15 @@ func TestRepository_GetByID(t *testing.T) {
 				}(),
 			},
 			args:   args{id: mockUUID},
+			expRes: &album.Album{ID: mockUUID, Title: "Foo"},
 			expErr: nil,
 		},
 		{
-			name:   "should return error when id does not exist in memory",
+			name:   "should return nil album and error when id does not exist in memory",
 			fields: fields{albums: make(map[string]album.Album)},
 			args:   args{id: mockUUID},
-			expErr: fmt.Errorf("album with id %v not found", mockUUID.String()),
+			expRes: (*album.Album)(nil),
+			expErr: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -206,9 +209,7 @@ func TestRepository_GetByID(t *testing.T) {
 			mr := Repository{albums: tt.fields.albums}
 			a, err := mr.GetByID(tt.args.id)
 			assert.Equal(t, tt.expErr, err)
-			if err == nil {
-				assert.Equal(t, tt.fields.albums[tt.args.id.String()], *a)
-			}
+			assert.Equal(t, tt.expRes, a)
 		})
 	}
 }
