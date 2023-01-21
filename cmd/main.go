@@ -11,8 +11,8 @@ import (
 func main() {
 	tp := time.NewTimeProvider()
 	up := uuid.NewUUIDProvider()
-	outputAdapters := adapters.NewServices()
-	appServices := app.NewServices(up, tp, outputAdapters.AlbumRepository)
-	inputPorts := ports.NewServices(appServices)
-	inputPorts.HTTPServer.ListenAndServe(":8080")
+	adapters := adapters.NewServices()
+	appServices := app.NewServices(up, tp, adapters.AlbumRepository)
+	ports := ports.NewServices(appServices)
+	ports.HTTPServer.ListenAndServe(":8080")
 }

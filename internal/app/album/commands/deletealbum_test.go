@@ -8,36 +8,36 @@ import (
 	"testing"
 )
 
-func TestNewUpdateAlbumHandler(t *testing.T) {
+func TestNewDeleteAlbumHandler(t *testing.T) {
 	type args struct {
 		repo album.Repository
 	}
 	tests := []struct {
 		name   string
 		args   args
-		expRes UpdateAlbumHandler
+		expRes DeleteAlbumHandler
 	}{
 		{
-			name:   "should return a new update album handler",
+			name:   "should return a new delete album handler",
 			args:   args{repo: &album.MockRepository{}},
-			expRes: updateAlbumHandler{repo: &album.MockRepository{}},
+			expRes: deleteAlbumHandler{repo: &album.MockRepository{}},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h := NewUpdateAlbumHandler(tt.args.repo)
+			h := NewDeleteAlbumHandler(tt.args.repo)
 			assert.Equal(t, tt.expRes, h)
 		})
 	}
 }
 
-func TestUpdateAlbumHandler_Handle(t *testing.T) {
+func TestDeleteAlbumHandler_Handle(t *testing.T) {
 	mockUUID := uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
 	type fields struct {
 		repo album.Repository
 	}
 	type args struct {
-		req UpdateAlbumRequest
+		req DeleteAlbumRequest
 	}
 	tests := []struct {
 		name   string
@@ -46,20 +46,17 @@ func TestUpdateAlbumHandler_Handle(t *testing.T) {
 		expErr error
 	}{
 		{
-			name: "should return nil when update successful",
+			name: "should return nil when delete is successful",
 			fields: fields{
 				repo: func() *album.MockRepository {
 					mr := album.MockRepository{}
 					getRes := album.Album{ID: mockUUID, Title: "foo"}
-					updateReq := album.Album{ID: mockUUID, Title: "update foo"}
 					mr.On("GetByID", mockUUID).Return(&getRes, nil)
-					mr.On("Update", updateReq).Return(nil)
+					mr.On("Delete", mockUUID).Return(nil)
 					return &mr
 				}(),
 			},
-			args: args{
-				req: UpdateAlbumRequest{ID: mockUUID, Title: "update foo"},
-			},
+			args:   args{req: DeleteAlbumRequest{ID: mockUUID}},
 			expErr: nil,
 		},
 		{
@@ -67,15 +64,13 @@ func TestUpdateAlbumHandler_Handle(t *testing.T) {
 			fields: fields{
 				repo: func() *album.MockRepository {
 					mr := album.MockRepository{}
-					err := fmt.Errorf("failed to access memory")
+					err := fmt.Errorf("failed to get album with id %v", mockUUID.String())
 					mr.On("GetByID", mockUUID).Return((*album.Album)(nil), err)
 					return &mr
 				}(),
 			},
-			args: args{
-				req: UpdateAlbumRequest{ID: mockUUID, Title: "update foo"},
-			},
-			expErr: fmt.Errorf("failed to access memory"),
+			args:   args{req: DeleteAlbumRequest{ID: mockUUID}},
+			expErr: fmt.Errorf("failed to get album with id %v", mockUUID.String()),
 		},
 		{
 			name: "should return error when get by id returns nil album",
@@ -86,33 +81,13 @@ func TestUpdateAlbumHandler_Handle(t *testing.T) {
 					return &mr
 				}(),
 			},
-			args: args{
-				req: UpdateAlbumRequest{ID: mockUUID, Title: "update foo"},
-			},
-			expErr: fmt.Errorf("update failed, album with id %v does not exist", mockUUID.String()),
-		},
-		{
-			name: "should return error when update fails",
-			fields: fields{
-				repo: func() *album.MockRepository {
-					mr := album.MockRepository{}
-					getRes := album.Album{ID: mockUUID, Title: "foo"}
-					updateReq := album.Album{ID: mockUUID, Title: "update foo"}
-					err := fmt.Errorf("failed to update album")
-					mr.On("GetByID", mockUUID).Return(&getRes, nil)
-					mr.On("Update", updateReq).Return(err)
-					return &mr
-				}(),
-			},
-			args: args{
-				req: UpdateAlbumRequest{ID: mockUUID, Title: "update foo"},
-			},
-			expErr: fmt.Errorf("failed to update album"),
+			args:   args{req: DeleteAlbumRequest{ID: mockUUID}},
+			expErr: fmt.Errorf("album with id %v does not exist", mockUUID.String()),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h := updateAlbumHandler{tt.fields.repo}
+			h := deleteAlbumHandler{repo: tt.fields.repo}
 			err := h.Handle(tt.args.req)
 			assert.Equal(t, tt.expErr, err)
 		})

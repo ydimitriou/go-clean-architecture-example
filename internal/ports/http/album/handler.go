@@ -136,3 +136,19 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
+
+const DeleteAlbumID = "albumID"
+
+// Delete deletes the requested album
+func (h Handler) Delete(w http.ResponseWriter, r *http.Request) {
+	v := mux.Vars(r)
+	albumID := uuid.MustParse(v[DeleteAlbumID])
+	req := commands.DeleteAlbumRequest{ID: albumID}
+	err := h.appServices.Commands.DeleteAlbumHandler.Handle(req)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

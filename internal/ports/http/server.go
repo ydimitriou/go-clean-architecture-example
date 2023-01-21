@@ -34,6 +34,7 @@ func (httpServer *Server) createHTTPRoutes() {
 	//Commands
 	httpServer.router.HandleFunc(albumsHTTPPATH, album.NewHandler(httpServer.appServices.AlbumServices).Create).Methods("POST")
 	httpServer.router.HandleFunc(albumsHTTPPATH+"/{"+album.UpdateAlbumID+"}", album.NewHandler(httpServer.appServices.AlbumServices).Update).Methods("PUT")
+	httpServer.router.HandleFunc(albumsHTTPPATH+"/{"+album.DeleteAlbumID+"}", album.NewHandler(httpServer.appServices.AlbumServices).Delete).Methods("DELETE")
 	// Queries
 	httpServer.router.HandleFunc(albumsHTTPPATH, album.NewHandler(httpServer.appServices.AlbumServices).GetAll).Methods("GET")
 	httpServer.router.HandleFunc(albumsHTTPPATH+"/{"+album.GetByIDURLParam+"}", album.NewHandler(httpServer.appServices.AlbumServices).GetByID).Methods("GET")

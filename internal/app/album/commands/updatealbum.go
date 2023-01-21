@@ -36,7 +36,7 @@ func (h updateAlbumHandler) Handle(req UpdateAlbumRequest) error {
 		return err
 	}
 	if a == nil {
-		return fmt.Errorf("update failed, album with id %v does not exist", req.ID)
+		return fmt.Errorf("update failed, album with id %v does not exist", req.ID.String())
 	}
 	a.Title = req.Title
 	a.Artist = req.Artist
