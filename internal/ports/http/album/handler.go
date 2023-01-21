@@ -92,3 +92,47 @@ func (h Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// UpdateAlbumRequest represents the expected model for update album request
+type UpdateAlbumRequest struct {
+	ID          uuid.UUID `json:"id"`
+	Title       string    `json:"title"`
+	Artist      string    `json:"artist"`
+	Price       float64   `json:"price"`
+	Description string    `json:"description"`
+}
+
+const UpdateAlbumID = "albumID"
+
+// Update updates details of requested album
+func (h Handler) Update(w http.ResponseWriter, r *http.Request) {
+	v := mux.Vars(r)
+	albumID := uuid.MustParse(v[UpdateAlbumID])
+
+	var req UpdateAlbumRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, err.Error())
+		return
+	}
+	if req.ID != albumID {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, fmt.Errorf("resource id and body id does not match").Error())
+		return
+	}
+	albumReq := commands.UpdateAlbumRequest{
+		ID:          req.ID,
+		Title:       req.Title,
+		Artist:      req.Artist,
+		Price:       req.Price,
+		Description: req.Description,
+	}
+	err = h.appServices.Commands.UpdateAlbumHandler.Handle(albumReq)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

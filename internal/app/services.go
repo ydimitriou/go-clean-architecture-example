@@ -11,6 +11,7 @@ import (
 // Commands contains all command handlers
 type Commands struct {
 	CreateAlbumHandler commands.CreateAlbumHandler
+	UpdateAlbumHandler commands.UpdateAlbumHandler
 }
 
 // Queries contains all query handlers
@@ -36,6 +37,7 @@ func NewServices(up uuid.Provider, tp time.Provider, repo album.Repository) Serv
 		AlbumServices: AlbumServices{
 			Commands: Commands{
 				CreateAlbumHandler: commands.NewCreateAlbumHandler(up, tp, repo),
+				UpdateAlbumHandler: commands.NewUpdateAlbumHandler(repo),
 			},
 			Queries: Queries{
 				GetAllAlbumsHAndler: queries.NewGetAllAlbumsHandler(repo),
